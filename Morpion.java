@@ -8,27 +8,72 @@ public final class Morpion {
 
 	public Morpion(){
 		this.plateau = new char [3][3];
+		for(int i = 0; i < this.plateau.length; i++){
+			for(int j = 0; j < this.plateau.length; j++){
+				this.plateau[i][j] = ' ';
+			}
+		}
+		this.j1 = new Joueur('x');
+		this.j2 = new Joueur('o');
+		System.out.println(this.toString());
 	}
 
 	public void start(){
-		Scanner clavier = new Scanner(System.in);
 			while(!gagner(j1.getnumero()) || !gagner(j2.getnumero())){
-				this.jouer(this.j1.getnumero(), clavier.nextInt(), clavier.nextInt());
-				this.jouer(this.j2.getnumero(), clavier.nextInt(), clavier.nextInt());
+				this.jouer(this.j1.getnumero());
+				System.out.println(this.toString());
+				this.jouer(this.j2.getnumero());
+				System.out.println(this.toString());
 			}
 	}
 
-	private void jouer(int p_joueur, int p_ligne, int p_colonne){
-		if(this.plateau[p_ligne][p_colonne] != ' '){
+	private void jouer(int p_joueur){
+		Scanner clavier = new Scanner(System.in);
+		int ligne = 0;
+		int colonne = 0;
+		System.out.print("Ligne : ");
+		try {
+			ligne = clavier.nextInt();
+		} catch (Exception e){
+			this.jouer(p_joueur);
+		}
+		if(ligne < 0 || ligne >= this.plateau.length){
+			while ( ligne < 0 || ligne >= this.plateau.length) {
+				System.out.print("Ligne : ");
+				try {
+					ligne = clavier.nextInt();
+				} catch (Exception e) {
+					this.jouer(p_joueur);
+				}
+			}
+		}
+		System.out.print("\nColonne : ");
+		try {
+			colonne = clavier.nextInt();
+		} catch (Exception e){
+			this.jouer(p_joueur);
+		}
+		if(colonne < 0 || colonne >= this.plateau.length){
+			while ( colonne < 0 || colonne >= this.plateau.length) {
+				System.out.print("\nColonne : ");
+				try {
+				colonne = clavier.nextInt();
+				} catch (Exception e){
+					this.jouer(p_joueur);
+				}
+			}
+		}
+		System.out.println("");
+		if(this.plateau[ligne][colonne] == ' '){
 			if(p_joueur == 1){
-				this.plateau[p_ligne][p_colonne] = this.j1.getsymbole();
+				this.plateau[ligne][colonne] = this.j1.getsymbole();
 			} else {
-				this.plateau[p_ligne][p_colonne] = this.j2.getsymbole();
+				this.plateau[ligne][colonne] = this.j2.getsymbole();
 			}
 		}
 		else {
-			Scanner clavier = new Scanner(System.in);
-			this.jouer(p_joueur, clavier.nextInt(), clavier.nextInt());
+			System.out.println("Case deja prise ! ");
+			this.jouer(p_joueur);
 		}
 	}
 
@@ -38,20 +83,22 @@ public final class Morpion {
 	
 	public String toString(){
 		StringBuilder resultat = new StringBuilder();
-		resultat.append("-------------------");
-		resultat.append("|");
+		resultat.append("\n      0        1         2\n");
+		resultat.append("  |---------|---------|---------|\n");
 		for(int i = 0; i < this.plateau.length; i++){
+			resultat.append(i + " |    ");
 			for(int j = 0; j < this.plateau.length; j++){
-				resultat.append(this.plateau[i][j] + " | "); 
+				resultat.append(this.plateau[i][j] + "    |    ");  
 			}
-			resultat.append("-------------------");
+			resultat.append("\n  |---------|---------|---------|\n");
 		}
-		resultat.append("-------------------");
+		resultat.append("\nJ1 : " + this.j1.getsymbole() + "\nJ2 : " + this.j2.getsymbole() + "\n");
 		return resultat.toString();
 	}
 
 	public static void main(String [] Args){
-		Morpion m = new Morpion(new Joueur('x'), new Joueur('o'));
+		Morpion m = new Morpion();
+		m.start();
 		System.out.println(m.toString());
 	}
 }
