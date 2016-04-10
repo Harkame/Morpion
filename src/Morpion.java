@@ -124,18 +124,18 @@ public final class Morpion {
 	}
 
 	public final boolean win_diagonale(Joueur p_joueur){
-		for(int i = 0; i < this.plateau.length; i++){
-			if((this.plateau[i][i] == p_joueur.getsymbole()) && (this.plateau[i][i] == p_joueur.getsymbole()) && (this.plateau[i][i] == p_joueur.getsymbole())){
-					return true;
-				}
-		}
 		int j = 0;
+		for(int i = 0; i < this.plateau.length;  i++){
+			for(int j = 0; j )
+		}
+		/*
 		for(int i = this.plateau.length; i < this.plateau.length; i++){
 			j++;
 			if((this.plateau[i][j] == p_joueur.getsymbole()) && (this.plateau[i][j] == p_joueur.getsymbole()) && (this.plateau[i][j] == p_joueur.getsymbole())){
 					return true;
 				}
 		}
+		*/
 		return false;
 	}
 
