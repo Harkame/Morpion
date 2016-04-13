@@ -124,18 +124,20 @@ public final class Morpion {
 	}
 
 	public final boolean win_diagonale(Joueur p_joueur){
-		int j = 0;
-		for(int i = 0; i < this.plateau.length;  i++){
-			if((this.plateau[i][j] == p_joueur.getsymbole()) && (this.plateau[i+1][j+1] == p_joueur.getsymbole()) && (this.plateau[i+2][j+2] == p_joueur.getsymbole())){
-					return true;
-				}
+		return this.win_diagonale_aux(p_joueur, this.plateau.length - 1, 0) ||  this.win_diagonale_aux(p_joueur, this.plateau.length - 1, this.plateau.length - 1) ;
+	}
+
+	private final boolean win_diagonale_aux(Joueur p_joueur, int p_ligne, int p_colonne){
+		if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] == p_joueur.getsymbole()){
+			return true;
+		} else if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] != p_joueur.getsymbole()){
+			return false;
 		}
-			for(int i = 0; i < this.plateau.length;  i++){
-			if((this.plateau[i][j] == p_joueur.getsymbole()) && (this.plateau[i+1][j+1] == p_joueur.getsymbole()) && (this.plateau[i+2][j+2] == p_joueur.getsymbole())){
-					return true;
-				}
+		else if (this.plateau[p_ligne][p_colonne] == ' '){
+			return false;
+		} else{
+			return this.win_diagonale_aux(p_joueur,  p_ligne - 1, p_colonne + 1) || this.win_diagonale_aux(p_joueur, p_ligne - 1, p_colonne - 1);
 		}
-		return false;
 	}
 
 	public final Joueur getJoueur(int p_id){
