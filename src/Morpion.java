@@ -149,6 +149,5 @@ public final class Morpion {
 	public static void main(String [] Args){
 		Morpion m = new Morpion();
 		m.start();
-		System.out.println(m.toString());
 	}
 }
