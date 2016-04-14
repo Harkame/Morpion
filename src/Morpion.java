@@ -27,16 +27,19 @@ public final class Morpion {
 			this.jouer(this.j1.getid());
 			System.out.println(this.toString());
 			if(this.statut == STATUT.FINISH){ 
-				System.out.println("=====================");
-				System.out.println("        GG J1");
-				System.out.println("=====================");
+				System.out.println(" -------------------");
+				System.out.println(" |                 |");
+				System.out.println(" |   WINNER : J1   |");
+				System.out.println(" |                 |");
+				System.out.println(" -------------------");
+				System.out.println("");
 				break;
 			}
 			this.jouer(this.j2.getid());
 			System.out.println(this.toString());
 			if(this.statut == STATUT.FINISH){ 
 				System.out.println("=====================");
-				System.out.println("        GG J2");
+				System.out.println(" |       GG J2|");
 				System.out.println("=====================");
 				break;
 			}
@@ -46,19 +49,19 @@ public final class Morpion {
 	private final void jouer(int p_joueur){
 		System.out.println("~~~ J" + p_joueur + " ~~~");
 		Scanner clavier = new Scanner(System.in);
-		System.out.print("--> Ligne : ");
+		System.out.print("  [LIGNE] : ");
 		int ligne = clavier.nextInt();
 		if(ligne < 0 || ligne >= this.plateau.length){
 			while ( ligne < 0 || ligne >= this.plateau.length) {
-				System.out.print("Ligne : ");
+				System.out.print("  [LIGNE] : ");
 				ligne = clavier.nextInt();
 			}
 		}
-		System.out.print("--> Colonne : ");
+		System.out.print("[COLONNE] : ");
 		int colonne = clavier.nextInt();
 		if(colonne < 0 || colonne >= this.plateau.length){
 			while ( colonne < 0 || colonne >= this.plateau.length) {
-				System.out.print("Colonne : ");
+				System.out.print("[COLONNE] : ");
 				colonne = clavier.nextInt();
 			}
 		}
@@ -101,7 +104,7 @@ public final class Morpion {
 			resultat.append("\n ---|-----------|-----------|-----------|---\n");
 		}
 		resultat.append("    |     0     |     1     |     2     |\n");
-		resultat.append("\nJ1 : " + this.j1.getsymbole() + "\nJ2 : " + this.j2.getsymbole() + "\n");
+		resultat.append("\n[J1] : " + this.j1.getsymbole() + "\n[J2] : " + this.j2.getsymbole() + "\n");
 		return resultat.toString();
 	}
 
@@ -124,10 +127,10 @@ public final class Morpion {
 	}
 
 	public final boolean win_diagonale(Joueur p_joueur){
-		return this.win_diagonale_aux(p_joueur, this.plateau.length - 1, 0) ||  this.win_diagonale_aux(p_joueur, this.plateau.length - 1, this.plateau.length - 1) ;
+		return this.win_diagonale_aux_gauche(p_joueur, this.plateau.length - 1, 0) ||  this.win_diagonale_aux_droite(p_joueur, this.plateau.length - 1, this.plateau.length - 1) ;
 	}
 
-	private final boolean win_diagonale_aux(Joueur p_joueur, int p_ligne, int p_colonne){
+	private final boolean win_diagonale_aux_gauche(Joueur p_joueur, int p_ligne, int p_colonne){
 		if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] == p_joueur.getsymbole()){
 			return true;
 		} else if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] != p_joueur.getsymbole()){
@@ -136,7 +139,20 @@ public final class Morpion {
 		else if (this.plateau[p_ligne][p_colonne] == ' '){
 			return false;
 		} else{
-			return this.win_diagonale_aux(p_joueur,  p_ligne - 1, p_colonne + 1) || this.win_diagonale_aux(p_joueur, p_ligne - 1, p_colonne - 1);
+			return this.win_diagonale_aux_gauche(p_joueur,  p_ligne - 1, p_colonne + 1);
+		}
+	}
+
+	private final boolean win_diagonale_aux_droite(Joueur p_joueur, int p_ligne, int p_colonne){
+		if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] == p_joueur.getsymbole()){
+			return true;
+		} else if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] != p_joueur.getsymbole()){
+			return false;
+		}
+		else if (this.plateau[p_ligne][p_colonne] == ' '){
+			return false;
+		} else{
+			return this.win_diagonale_aux_droite(p_joueur,  p_ligne -1, p_colonne - 1);
 		}
 	}
 
