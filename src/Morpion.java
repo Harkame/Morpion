@@ -38,9 +38,12 @@ public final class Morpion {
 			this.jouer(this.j2.getid());
 			System.out.println(this.toString());
 			if(this.statut == STATUT.FINISH){ 
-				System.out.println("=====================");
-				System.out.println(" |       GG J2|");
-				System.out.println("=====================");
+					System.out.println(" -------------------");
+				System.out.println(" |                 |");
+				System.out.println(" |   WINNER : J2   |");
+				System.out.println(" |                 |");
+				System.out.println(" -------------------");
+				System.out.println("");
 				break;
 			}
 		}			
