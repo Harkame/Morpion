@@ -107,7 +107,9 @@ public final class Morpion
 
 	private final boolean gagner(int p_joueur)
 	{
-		return this.win_ligne(this.getJoueur(p_joueur)) || this.win_colonne(this.getJoueur(p_joueur)) ||this.win_diagonale(this.getJoueur(p_joueur));
+		return this.win_ligne(this.getJoueur(p_joueur)) ||
+			this.win_colonne(this.getJoueur(p_joueur)) ||
+			this.win_diagonale(this.getJoueur(p_joueur));
 	}
 	
 	public String toString()
@@ -133,7 +135,7 @@ public final class Morpion
 			resultat.append("\n ---|-----------|-----------|-----------|---\r\n");
 		}
 		resultat.append("    |     0     |     1     |     2     |\r\n");
-		resultat.append("\n[J1] : " + this.j1.getsymbole() + "\r\n[J2] : " + this.j2.getsymbole() + "\r\n");
+		resultat.append("\r\n[J1] : " + this.j1.getsymbole() + "\r\n[J2] : " + this.j2.getsymbole() + "\r\n");
 		return resultat.toString();
 	}
 
@@ -145,8 +147,8 @@ public final class Morpion
 				(this.plateau[i][1] == p_joueur.getsymbole()) &&
 				(this.plateau[i][2] == p_joueur.getsymbole()))
 			{
-					return true;
-				}
+				return true;
+			}
 		}
 		return false;
 	}
@@ -155,7 +157,9 @@ public final class Morpion
 	{
 		for(int i = 0; i < this.plateau.length; i++)
 		{
-			if((this.plateau[0][i] == p_joueur.getsymbole()) && (this.plateau[1][i] == p_joueur.getsymbole()) && (this.plateau[2][i] == p_joueur.getsymbole()))
+			if((this.plateau[0][i] == p_joueur.getsymbole()) &&
+				(this.plateau[1][i] == p_joueur.getsymbole()) &&
+				(this.plateau[2][i] == p_joueur.getsymbole()))
 			{
 				return true;
 			}
@@ -191,18 +195,21 @@ public final class Morpion
 
 	private final boolean win_diagonale_aux_droite(Joueur p_joueur, int p_ligne, int p_colonne)
 	{
-		if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] == p_joueur.getsymbole())
+		if(p_ligne == 0 &&
+			this.plateau[p_ligne][p_colonne] == p_joueur.getsymbole())
 		{
 			return true;
 		}
-		else if(p_ligne == 0 && this.plateau[p_ligne][p_colonne] != p_joueur.getsymbole())
+		else if(p_ligne == 0 &&
+			this.plateau[p_ligne][p_colonne] != p_joueur.getsymbole())
 		{
 			return false;
 		}
 		else if (this.plateau[p_ligne][p_colonne] == ' ')
 		{
 			return false;
-		} else
+		}
+		else
 		{
 			return this.win_diagonale_aux_droite(p_joueur,  p_ligne -1, p_colonne - 1);
 		}
@@ -223,9 +230,9 @@ public final class Morpion
 	public static void main(String [] Args)
 	{
 		Morpion m = new Morpion();
-		m.plateau[0][0] = 'x';
-		m.plateau[0][1] = 'x';
-		m.plateau[0][2] = 'x';
+		m.plateau[0][0] = 'o';
+		m.plateau[0][1] = 'o';
+		m.plateau[0][2] = 'o';
 		m.start();
 	}
 }
