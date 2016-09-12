@@ -31,13 +31,13 @@ public final class Morpion
 
 	public final void start()
 	{
+		statut = STATUT.STARTED;
 		while(true)
 		{
-			clearScreen();
 			jouer(j1.getid());
-			System.out.println(toString());
 			if(statut == STATUT.FINISH)
 			{ 
+				refreshScreen();
 				System.out.println(" -------------------");
 				System.out.println(" |                 |");
 				System.out.println(" |   WINNER : J1   |");
@@ -45,11 +45,10 @@ public final class Morpion
 				System.out.println(" -------------------\r\n");
 				break;
 			}
-			clearScreen();
 			jouer(j2.getid());
-			System.out.println(toString());
 			if(statut == STATUT.FINISH)
 			{ 
+				refreshScreen();
 				System.out.println(" -------------------");
 				System.out.println(" |                 |");
 				System.out.println(" |   WINNER : J2   |");
@@ -62,6 +61,7 @@ public final class Morpion
 
 	private final void jouer(int p_joueur)
 	{
+		refreshScreen();
 		System.out.println("~~~ J" + p_joueur + " ~~~");
 		Scanner clavier = new Scanner(System.in);
 		System.out.print("  [LIGNE] : ");
@@ -88,13 +88,9 @@ public final class Morpion
 		if(plateau[ligne][colonne] == ' ')
 		{
 			if(p_joueur == 1)
-			{
 				plateau[ligne][colonne] = j1.getsymbole();
-			}
 			else
-			{
 				plateau[ligne][colonne] = j2.getsymbole();
-			}
 		}
 		else
 		{
@@ -102,15 +98,13 @@ public final class Morpion
 			jouer(p_joueur);
 		}
 		if(gagner(j1.getid()) || gagner(j2.getid()))
-		{
 			statut = STATUT.FINISH;
-		}
 	}
 
 	private final boolean gagner(int p_joueur)
 	{
 		return win_ligne(getJoueur(p_joueur)) ||
-			win_colonne(getJoueur(p_joueur)) ||
+			win_colonne(getJoueur(p_joueur))  ||
 			win_diagonale(getJoueur(p_joueur));
 	}
 	
@@ -125,13 +119,9 @@ public final class Morpion
 			for(int j = 0; j < plateau.length; j++)
 			{
 				if(j < plateau.length -1)
-				{
 					resultat.append(plateau[i][j] + "     |     ");
-				}
 				else
-				{
 					resultat.append(plateau[i][j] + "     |");  
-				}
 			}
 			resultat.append(" " + i);
 			resultat.append("\n ---|-----------|-----------|-----------|---\r\n");
@@ -145,7 +135,7 @@ public final class Morpion
 	{
 		for(int i = 0; i < plateau.length; i++)
 		{
-			if((plateau[i][0] == p_joueur.getsymbole()) &&
+			if((plateau[i][0] == p_joueur.getsymbole())  &&
 				(plateau[i][1] == p_joueur.getsymbole()) &&
 				(plateau[i][2] == p_joueur.getsymbole()))
 			{
@@ -159,7 +149,7 @@ public final class Morpion
 	{
 		for(int i = 0; i < plateau.length; i++)
 		{
-			if((plateau[0][i] == p_joueur.getsymbole()) &&
+			if((plateau[0][i] == p_joueur.getsymbole())  &&
 				(plateau[1][i] == p_joueur.getsymbole()) &&
 				(plateau[2][i] == p_joueur.getsymbole()))
 			{
@@ -171,65 +161,35 @@ public final class Morpion
 
 	public final boolean win_diagonale(Joueur p_joueur)
 	{
-		return win_diagonale_aux_gauche(p_joueur, plateau.length - 1, 0) ||
-			win_diagonale_aux_droite(p_joueur, plateau.length - 1, plateau.length - 1) ;
+		return win_diagonale_gauche(p_joueur) ||
+				win_diagonale_droite(p_joueur);
 	}
 
-	private final boolean win_diagonale_aux_gauche(Joueur p_joueur, int p_ligne, int p_colonne)
+	private final boolean win_diagonale_gauche(Joueur p_joueur)
 	{
-		if(p_ligne == 0 && plateau[p_ligne][p_colonne] == p_joueur.getsymbole())
-		{
-			return true;
-		}
-		else if(p_ligne == 0 && plateau[p_ligne][p_colonne] != p_joueur.getsymbole())
-		{
-			return false;
-		}
-		else if (plateau[p_ligne][p_colonne] == ' ')
-		{
-			return false;
-		}
-		else
-		{
-			return win_diagonale_aux_gauche(p_joueur,  p_ligne - 1, p_colonne + 1);
-		}
+		for(int indice = 0; indice < plateau.length; indice++)
+			if(plateau[indice][indice] != p_joueur.getsymbole())
+				return false;
+		return true;
 	}
 
-	private final boolean win_diagonale_aux_droite(Joueur p_joueur, int p_ligne, int p_colonne)
+	private final boolean win_diagonale_droite(Joueur p_joueur)
 	{
-		if(p_ligne == 0 &&
-			plateau[p_ligne][p_colonne] == p_joueur.getsymbole())
-		{
-			return true;
-		}
-		else if(p_ligne == 0 &&
-			plateau[p_ligne][p_colonne] != p_joueur.getsymbole())
-		{
-			return false;
-		}
-		else if (plateau[p_ligne][p_colonne] == ' ')
-		{
-			return false;
-		}
-		else
-		{
-			return win_diagonale_aux_droite(p_joueur,  p_ligne -1, p_colonne - 1);
-		}
+		for(int indice = 0; indice < plateau.length; indice++)
+			if(plateau[indice][plateau.length - indice - 1] != p_joueur.getsymbole())
+				return false;
+		return true;
 	}
 
 	public final Joueur getJoueur(int p_id)
 	{
 		if(j1.getid() == p_id)
-		{
 			return j1;
-		}
 		else 
-		{
 			return j2;
-		}
 	}
 	
-	public final void clearScreen()
+	public final void refreshScreen()
 	{
 		System.out.print("\033[H\033[2J");  
 		System.out.flush();
