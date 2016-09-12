@@ -1,1 +1,4 @@
-add IA (random case for J2)
+Modes de jeu : 
+  - local Player vs Player : OK
+  - Player vs IA (random)
+  - Player vs Player (Socket))
