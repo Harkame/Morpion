@@ -1,23 +1,23 @@
 public final class Joueur
 {
-	private final int id;
+	private final int  id;
 	private final char symbole;
 
 	private static int incr = 1;
 
 	public Joueur(char p_symbole)
 	{
-		this.id = incr++;
-		this.symbole = p_symbole;
+		id = incr++;
+		symbole = p_symbole;
 	}
 
-	public int getid()
+	public final int getid()
 	{
-		return this.id;
+		return id;
 	}
 
-	public char getsymbole()
+	public final char getsymbole()
 	{
-		return this.symbole;
+		return symbole;
 	}
 }
