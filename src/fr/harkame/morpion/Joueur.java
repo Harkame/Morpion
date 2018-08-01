@@ -1,3 +1,4 @@
+package fr.harkame.morpion;
 public final class Joueur
 {
 	private final int  id;

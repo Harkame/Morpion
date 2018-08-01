@@ -1,3 +1,4 @@
+package fr.harkame.morpion;
 import java.util.Scanner;
 import java.lang.StringBuilder;
 
