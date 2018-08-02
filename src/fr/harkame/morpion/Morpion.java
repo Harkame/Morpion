@@ -1,205 +1,218 @@
 package fr.harkame.morpion;
+
 import java.util.Scanner;
 import java.lang.StringBuilder;
 
 public final class Morpion
 {
-	private Joueur j1;
-	private Joueur j2;
-	private char [][] plateau;
+	public final static int		BOARD_SIZE	= 3;
+	public final static String	LINE_SEPARATOR	= System.getProperty("line.separator");
+	public final static Scanner	KEYBOARD		= new Scanner(System.in);
 
-	public enum STATUT
-	{
-		NOT_START, STARTED, FINISH
-	};
-	private STATUT statut;
+	private Player	player1;
+	private Player	player2;
+
+	private char[][] board;
+
+	private State state;
 
 	public Morpion()
 	{
-		statut = STATUT.NOT_START;
-		plateau = new char [3][3];
-		for(int i = 0; i < plateau.length; i++)
-		{
-			for(int j = 0; j < plateau.length; j++)
-			{
-				plateau[i][j] = ' ';
-			}
-		}
-		j1 = new Joueur('x');
-		j2 = new Joueur('o');
-		System.out.println(toString());
+		state = State.NOT_START;
+		board = new char[BOARD_SIZE][BOARD_SIZE];
+
+		for(int i = 0; i < board.length; i++)
+			for(int j = 0; j < board.length; j++)
+				board[i][j] = ' ';
+
+		player1 = new Player('x');
+		player2 = new Player('o');
 	}
 
-	public final void start()
+	public void start()
 	{
-		statut = STATUT.STARTED;
+		state = State.STARTED;
+
 		while(true)
 		{
-			jouer(j1.getid());
-			if(statut == STATUT.FINISH)
-			{ 
-				refreshScreen();
-				System.out.println(" -------------------");
-				System.out.println(" |                 |");
-				System.out.println(" |   WINNER : J1   |");
-				System.out.println(" |                 |");
-				System.out.println(" -------------------\r\n");
-				break;
-			}
-			jouer(j2.getid());
-			if(statut == STATUT.FINISH)
-			{ 
-				refreshScreen();
-				System.out.println(" -------------------");
-				System.out.println(" |                 |");
-				System.out.println(" |   WINNER : J2   |");
-				System.out.println(" |                 |");
-				System.out.println(" -------------------\r\n");
-				break;
-			}
-		}			
-	}
-
-	private final void jouer(int p_joueur)
-	{
-		refreshScreen();
-		System.out.println("~~~ J" + p_joueur + " ~~~");
-		Scanner clavier = new Scanner(System.in);
-		System.out.print("  [LIGNE] : ");
-		int ligne = clavier.nextInt();
-		if(ligne < 0 || ligne >= plateau.length)
-		{
-			while ( ligne < 0 || ligne >= plateau.length)
+			play(player1);
+			if(state == State.FINISH)
 			{
-				System.out.print("  [LIGNE] : ");
-				ligne = clavier.nextInt();
+				refreshScreen();
+				System.out.println(" ------------------------");
+				System.out.println(" |                      |");
+				System.out.println(" |   WINNER : player1   |");
+				System.out.println(" |                      |");
+				System.out.println(" ------------------------");
+				break;
+			}
+			play(player2);
+			if(state == State.FINISH)
+			{
+				refreshScreen();
+				System.out.println(" ------------------------");
+				System.out.println(" |                      |");
+				System.out.println(" |   WINNER : player2   |");
+				System.out.println(" |                      |");
+				System.out.println(" ------------------------");
+				break;
 			}
 		}
-		System.out.print("[COLONNE] : ");
-		int colonne = clavier.nextInt();
-		if(colonne < 0 || colonne >= plateau.length)
+
+		KEYBOARD.close();
+	}
+
+	private void play(Player player)
+	{
+		refreshScreen();
+
+		System.out.println("~~~ J" + player.getId() + " ~~~");
+		System.out.print("  [LINE] : ");
+		int line = KEYBOARD.nextInt();
+		if(line < 0 || line >= BOARD_SIZE)
 		{
-			while ( colonne < 0 || colonne >= plateau.length)
+			while(line < 0 || line >= BOARD_SIZE)
+			{
+				System.out.print("  [LINE] : ");
+				line = KEYBOARD.nextInt();
+			}
+		}
+		System.out.print("[COLUMN] : ");
+		int column = KEYBOARD.nextInt();
+		if(column < 0 || column >= BOARD_SIZE)
+		{
+			while(column < 0 || column >= BOARD_SIZE)
 			{
 				System.out.print("[COLONNE] : ");
-				colonne = clavier.nextInt();
+				column = KEYBOARD.nextInt();
 			}
 		}
 		System.out.println("");
-		if(plateau[ligne][colonne] == ' ')
-		{
-			if(p_joueur == 1)
-				plateau[ligne][colonne] = j1.getsymbole();
-			else
-				plateau[ligne][colonne] = j2.getsymbole();
-		}
+		if(board[line][column] == ' ')
+			board[line][column] = player.getSigil();
 		else
 		{
-			System.out.println("Case deja prise ! ");
-			jouer(p_joueur);
+			System.out.println("Impsossible !");
+			play(player);
 		}
-		if(gagner(j1.getid()) || gagner(j2.getid()))
-			statut = STATUT.FINISH;
+
+		if(win(player1) || win(player2))
+			state = State.FINISH;
 	}
 
-	private final boolean gagner(int p_joueur)
+	private boolean win(Player player)
 	{
-		return win_ligne(getJoueur(p_joueur)) ||
-			win_colonne(getJoueur(p_joueur))  ||
-			win_diagonale(getJoueur(p_joueur));
-	}
-	
-	public String toString()
-	{
-		StringBuilder resultat = new StringBuilder();
-		resultat.append("\n    |     0     |     1     |     2     |\r\n");
-		resultat.append(" ---|-----------|-----------|-----------|---\r\n");
-		for(int i = 0; i < plateau.length; i++)
-		{
-			resultat.append("  " + i + " |     ");
-			for(int j = 0; j < plateau.length; j++)
-			{
-				if(j < plateau.length -1)
-					resultat.append(plateau[i][j] + "     |     ");
-				else
-					resultat.append(plateau[i][j] + "     |");  
-			}
-			resultat.append(" " + i);
-			resultat.append("\n ---|-----------|-----------|-----------|---\r\n");
-		}
-		resultat.append("    |     0     |     1     |     2     |\r\n");
-		resultat.append("\r\n[J1] : " + j1.getsymbole() + "\r\n[J2] : " + j2.getsymbole() + "\r\n");
-		return resultat.toString();
+		return winLine(player) || winColumn(player) || winDiagonal(player);
 	}
 
-	public final boolean win_ligne(Joueur p_joueur)
+	public final boolean winLine(Player p_joueur)
 	{
-		for(int i = 0; i < plateau.length; i++)
-		{
-			if((plateau[i][0] == p_joueur.getsymbole())  &&
-				(plateau[i][1] == p_joueur.getsymbole()) &&
-				(plateau[i][2] == p_joueur.getsymbole()))
-			{
+		for(int i = 0; i < board.length; i++)
+			if((board[i][0] == p_joueur.getSigil()) && (board[i][1] == p_joueur.getSigil())
+				&& (board[i][2] == p_joueur.getSigil()))
 				return true;
-			}
-		}
+
 		return false;
 	}
 
-	public final boolean win_colonne(Joueur p_joueur)
+	public final boolean winColumn(Player p_joueur)
 	{
-		for(int i = 0; i < plateau.length; i++)
-		{
-			if((plateau[0][i] == p_joueur.getsymbole())  &&
-				(plateau[1][i] == p_joueur.getsymbole()) &&
-				(plateau[2][i] == p_joueur.getsymbole()))
-			{
+		for(int i = 0; i < board.length; i++)
+			if((board[0][i] == p_joueur.getSigil()) && (board[1][i] == p_joueur.getSigil())
+				&& (board[2][i] == p_joueur.getSigil()))
 				return true;
-			}
-		}
+
 		return false;
 	}
 
-	public final boolean win_diagonale(Joueur p_joueur)
+	public final boolean winDiagonal(Player p_joueur)
 	{
-		return win_diagonale_gauche(p_joueur) ||
-				win_diagonale_droite(p_joueur);
+		return winDiagonalLeft(p_joueur) || winDiagonalRight(p_joueur);
 	}
 
-	private final boolean win_diagonale_gauche(Joueur p_joueur)
+	private final boolean winDiagonalLeft(Player p_joueur)
 	{
-		for(int indice = 0; indice < plateau.length; indice++)
-			if(plateau[indice][indice] != p_joueur.getsymbole())
+		for(int indice = 0; indice < board.length; indice++)
+			if(board[indice][indice] != p_joueur.getSigil())
 				return false;
+
 		return true;
 	}
 
-	private final boolean win_diagonale_droite(Joueur p_joueur)
+	private final boolean winDiagonalRight(Player p_joueur)
 	{
-		for(int indice = 0; indice < plateau.length; indice++)
-			if(plateau[indice][plateau.length - indice - 1] != p_joueur.getsymbole())
+		for(int indice = 0; indice < board.length; indice++)
+			if(board[indice][board.length - indice - 1] != p_joueur.getSigil())
 				return false;
+
 		return true;
 	}
 
-	public final Joueur getJoueur(int p_id)
-	{
-		if(j1.getid() == p_id)
-			return j1;
-		else 
-			return j2;
-	}
-	
 	public final void refreshScreen()
 	{
-		System.out.print("\033[H\033[2J");  
+		System.out.print("\033c");
 		System.out.flush();
 		System.out.println(toString());
-	}  
+	}
 
-	public static void main(String [] Args)
+	@Override
+	public String toString()
 	{
-		Morpion m = new Morpion();
-		m.start();
+		StringBuilder toString = new StringBuilder();
+
+		toString.append(LINE_SEPARATOR);
+		toString.append("    ");
+
+		for(int index = 0; index < BOARD_SIZE; index++)
+		{
+			toString.append("|     ");
+			toString.append(index);
+			toString.append("     ");
+		}
+
+		toString.append(LINE_SEPARATOR);
+		toString.append(" ---");
+
+		for(int index = 0; index < BOARD_SIZE; index++)
+			toString.append("|-----------");
+
+		toString.append("|---");
+		toString.append(LINE_SEPARATOR);
+
+		for(int i = 0; i < BOARD_SIZE; i++)
+		{
+			toString.append("  " + i + " ");
+
+			for(int j = 0; j < BOARD_SIZE; j++)
+			{
+				toString.append("|     ");
+				toString.append(board[i][j]);
+				toString.append("     ");
+			}
+
+			toString.append("|");
+
+			toString.append(LINE_SEPARATOR);
+
+			toString.append(" ---");
+
+			for(int index = 0; index < BOARD_SIZE; index++)
+				toString.append("|-----------");
+
+			toString.append("|---");
+
+			toString.append(LINE_SEPARATOR);
+		}
+
+		for(int j = 0; j <= BOARD_SIZE; j++)
+			toString.append("    |       ");
+
+		return toString.toString();
+	}
+
+	public static void main(String[] Args)
+	{
+		Morpion morpion = new Morpion();
+		morpion.start();
 	}
 }
