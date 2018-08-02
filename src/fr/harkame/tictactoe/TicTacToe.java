@@ -3,7 +3,7 @@ package fr.harkame.tictactoe;
 import java.util.Scanner;
 import java.lang.StringBuilder;
 
-public final class Morpion
+public final class TicTacToe
 {
 	public final static int		BOARD_SIZE	= 3;
 	public final static String	LINE_SEPARATOR	= System.getProperty("line.separator");
@@ -16,7 +16,7 @@ public final class Morpion
 
 	private State state;
 
-	public Morpion()
+	public TicTacToe()
 	{
 		state = State.NOT_START;
 		board = new char[BOARD_SIZE][BOARD_SIZE];
@@ -212,7 +212,7 @@ public final class Morpion
 
 	public static void main(String[] Args)
 	{
-		Morpion morpion = new Morpion();
-		morpion.start();
+		TicTacToe ticTacToe = new TicTacToe();
+		ticTacToe.start();
 	}
 }
