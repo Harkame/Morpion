@@ -5,8 +5,10 @@ import java.lang.StringBuilder;
 
 public final class TicTacToe
 {
+	public final static String PROPERTY_LINE_SEPARATOR = "line.separator";
+
 	public final static int		BOARD_SIZE	= 3;
-	public final static String	LINE_SEPARATOR	= System.getProperty("line.separator");
+	public final static String	LINE_SEPARATOR	= System.getProperty(PROPERTY_LINE_SEPARATOR);
 	public final static Scanner	KEYBOARD		= new Scanner(System.in);
 
 	private Player	player1;
@@ -93,7 +95,7 @@ public final class TicTacToe
 			board[line][column] = player.getSigil();
 		else
 		{
-			System.out.println("Impsossible !");
+			System.out.println("Impossible !");
 			play(player);
 		}
 
