@@ -1,4 +1,4 @@
-package fr.harkame.morpion;
+package fr.harkame.tictactoe;
 
 import java.util.Scanner;
 import java.lang.StringBuilder;

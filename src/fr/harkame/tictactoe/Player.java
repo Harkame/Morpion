@@ -1,4 +1,4 @@
-package fr.harkame.morpion;
+package fr.harkame.tictactoe;
 
 public final class Player
 {
