@@ -66,14 +66,15 @@ public final class TicTacToe
 	{
 		refreshScreen();
 
-		System.out.println("~~~ J" + player.getId() + " ~~~");
-		System.out.print("  [LINE] : ");
+		System.out.println("");
+		System.out.println("~~~ P" + player.getId() + " ~~~");
+		System.out.print("[LINE] : ");
 		int line = KEYBOARD.nextInt();
 		if(line < 0 || line >= BOARD_SIZE)
 		{
 			while(line < 0 || line >= BOARD_SIZE)
 			{
-				System.out.print("  [LINE] : ");
+				System.out.print("[LINE] : ");
 				line = KEYBOARD.nextInt();
 			}
 		}
@@ -170,9 +171,9 @@ public final class TicTacToe
 			toString.append("     ");
 		}
 
+		toString.append("|");
 		toString.append(LINE_SEPARATOR);
 		toString.append(" ---");
-
 		for(int index = 0; index < BOARD_SIZE; index++)
 			toString.append("|-----------");
 
