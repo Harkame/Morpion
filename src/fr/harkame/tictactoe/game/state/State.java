@@ -1,4 +1,4 @@
-package fr.harkame.tictactoe;
+package fr.harkame.tictactoe.game.state;
 
 public enum State
 {

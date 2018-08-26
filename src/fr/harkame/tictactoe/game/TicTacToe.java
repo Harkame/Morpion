@@ -1,6 +1,10 @@
-package fr.harkame.tictactoe;
+package fr.harkame.tictactoe.game;
 
 import java.util.Scanner;
+
+import fr.harkame.tictactoe.game.player.Player;
+import fr.harkame.tictactoe.game.state.State;
+
 import java.lang.StringBuilder;
 
 public final class TicTacToe
@@ -9,7 +13,6 @@ public final class TicTacToe
 
 	public final static int		BOARD_SIZE	= 3;
 	public final static String	LINE_SEPARATOR	= System.getProperty(PROPERTY_LINE_SEPARATOR);
-	public final static Scanner	KEYBOARD		= new Scanner(System.in);
 
 	private Player	player1;
 	private Player	player2;
@@ -18,6 +21,13 @@ public final class TicTacToe
 
 	private State state;
 
+	private Scanner keyboard;
+
+	/**
+	 * Default constructor
+	 * 
+	 * Initialize the game (state, board, players)
+	 */
 	public TicTacToe()
 	{
 		state = State.NOT_START;
@@ -29,8 +39,16 @@ public final class TicTacToe
 
 		player1 = new Player('x');
 		player2 = new Player('o');
+
+		keyboard = new Scanner(System.in);
 	}
 
+	/**
+	 * Start the game
+	 * 
+	 * While true loop, if an player win (line, column or diagonal) its stop
+	 * the program with an wining message
+	 */
 	public void start()
 	{
 		state = State.STARTED;
@@ -61,33 +79,42 @@ public final class TicTacToe
 			}
 		}
 
-		KEYBOARD.close();
+		keyboard.close();
 	}
 
+	/**
+	 * Refresh the screen, ask to an player to enter the coordinate of the
+	 * choosen case, line then column.
+	 * 
+	 * Put the player's sigil into the choosen case
+	 * 
+	 * @param player
+	 *             Player who play
+	 */
 	private void play(Player player)
 	{
 		refreshScreen();
 
 		System.out.println("");
-		System.out.println("~~~ P" + player.getId() + " ~~~");
+		System.out.println("~~~ P" + player.getIdentifiant() + " ~~~");
 		System.out.print("[LINE] : ");
-		int line = KEYBOARD.nextInt();
+		int line = keyboard.nextInt();
 		if(line < 0 || line >= BOARD_SIZE)
 		{
 			while(line < 0 || line >= BOARD_SIZE)
 			{
 				System.out.print("[LINE] : ");
-				line = KEYBOARD.nextInt();
+				line = keyboard.nextInt();
 			}
 		}
 		System.out.print("[COLUMN] : ");
-		int column = KEYBOARD.nextInt();
+		int column = keyboard.nextInt();
 		if(column < 0 || column >= BOARD_SIZE)
 		{
 			while(column < 0 || column >= BOARD_SIZE)
 			{
 				System.out.print("[COLONNE] : ");
-				column = KEYBOARD.nextInt();
+				column = keyboard.nextInt();
 			}
 		}
 		System.out.println("");
@@ -103,54 +130,99 @@ public final class TicTacToe
 			state = State.FINISH;
 	}
 
+	/**
+	 * Check if an player win the game (line, column or diagonal)
+	 * 
+	 * @param player
+	 *             Player to check
+	 * @return True if the player win (line, column or diagonal)
+	 */
 	private boolean win(Player player)
 	{
 		return winLine(player) || winColumn(player) || winDiagonal(player);
 	}
 
-	public final boolean winLine(Player p_joueur)
+	/**
+	 * Check if an player win the game with an line
+	 * 
+	 * @param player
+	 *             Player to check
+	 * @return True if the player win an line
+	 */
+	public final boolean winLine(Player player)
 	{
 		for(int i = 0; i < board.length; i++)
-			if((board[i][0] == p_joueur.getSigil()) && (board[i][1] == p_joueur.getSigil())
-				&& (board[i][2] == p_joueur.getSigil()))
+			if((board[i][0] == player.getSigil()) && (board[i][1] == player.getSigil())
+				&& (board[i][2] == player.getSigil()))
 				return true;
 
 		return false;
 	}
 
-	public final boolean winColumn(Player p_joueur)
+	/**
+	 * Check if an player win the game with an column
+	 * 
+	 * @param player
+	 *             Player to check
+	 * @return True if the player win an column
+	 */
+	public final boolean winColumn(Player player)
 	{
 		for(int i = 0; i < board.length; i++)
-			if((board[0][i] == p_joueur.getSigil()) && (board[1][i] == p_joueur.getSigil())
-				&& (board[2][i] == p_joueur.getSigil()))
+			if((board[0][i] == player.getSigil()) && (board[1][i] == player.getSigil())
+				&& (board[2][i] == player.getSigil()))
 				return true;
 
 		return false;
 	}
 
-	public final boolean winDiagonal(Player p_joueur)
+	/**
+	 * Check if player an player win the game with an diagonal (left or right)
+	 * 
+	 * @param player
+	 *             Player to check
+	 * @return True if the player win with an diagonal (left or right)
+	 */
+	public final boolean winDiagonal(Player player)
 	{
-		return winDiagonalLeft(p_joueur) || winDiagonalRight(p_joueur);
+		return winDiagonalLeft(player) || winDiagonalRight(player);
 	}
 
-	private final boolean winDiagonalLeft(Player p_joueur)
+	/**
+	 * Check if an player win the game with right an diagonal
+	 * 
+	 * @param player
+	 *             Player to check
+	 * @return True if the player win with an left diagonal
+	 */
+	private final boolean winDiagonalLeft(Player player)
 	{
 		for(int indice = 0; indice < board.length; indice++)
-			if(board[indice][indice] != p_joueur.getSigil())
+			if(board[indice][indice] != player.getSigil())
 				return false;
 
 		return true;
 	}
 
-	private final boolean winDiagonalRight(Player p_joueur)
+	/**
+	 * Check if player in parameter win the game with left diagonal
+	 * 
+	 * @param player
+	 *             Player to check
+	 * @return True if the player win with right diagonal
+	 */
+	private final boolean winDiagonalRight(Player player)
 	{
 		for(int indice = 0; indice < board.length; indice++)
-			if(board[indice][board.length - indice - 1] != p_joueur.getSigil())
+			if(board[indice][board.length - indice - 1] != player.getSigil())
 				return false;
 
 		return true;
 	}
 
+	/**
+	 * Print character \033c, flush and print toString
+	 */
 	public final void refreshScreen()
 	{
 		System.out.print("\033c");
@@ -211,11 +283,5 @@ public final class TicTacToe
 			toString.append("    |       ");
 
 		return toString.toString();
-	}
-
-	public static void main(String[] Args)
-	{
-		TicTacToe ticTacToe = new TicTacToe();
-		ticTacToe.start();
 	}
 }
