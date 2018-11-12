@@ -7,12 +7,12 @@ import fr.harkame.tictactoe.game.state.State;
 
 import java.lang.StringBuilder;
 
-public final class TicTacToe
+public class TicTacToe
 {
-	public final static String PROPERTY_LINE_SEPARATOR = "line.separator";
+	public static String PROPERTY_LINE_SEPARATOR = "line.separator";
 
-	public final static int		BOARD_SIZE	= 3;
-	public final static String	LINE_SEPARATOR	= System.getProperty(PROPERTY_LINE_SEPARATOR);
+	public static int		BOARD_SIZE	= 3;
+	public static String	LINE_SEPARATOR	= System.getProperty(PROPERTY_LINE_SEPARATOR);
 
 	private Player	player1;
 	private Player	player2;
@@ -42,6 +42,29 @@ public final class TicTacToe
 
 		keyboard = new Scanner(System.in);
 	}
+	
+	/**
+	 * Constructor with parameters (Player's symbols)
+	 * 
+	 * @param player1_symbol Symbol of the player 1
+	 * @param player2_symbol Symbol of the player 2
+	 * 
+	 * Initialize the game (state, board, players)
+	 */
+	public TicTacToe(char player1_symbol, char player2_symbol)
+	{
+		state = State.NOT_START;
+		board = new char[BOARD_SIZE][BOARD_SIZE];
+
+		for(int i = 0; i < board.length; i++)
+			for(int j = 0; j < board.length; j++)
+				board[i][j] = ' ';
+
+		player1 = new Player(player1_symbol);
+		player2 = new Player(player2_symbol);
+
+		keyboard = new Scanner(System.in);
+	}
 
 	/**
 	 * Start the game
@@ -52,29 +75,21 @@ public final class TicTacToe
 	public void start()
 	{
 		state = State.STARTED;
-
+		
 		while(true)
 		{
 			play(player1);
 			if(state == State.FINISH)
 			{
 				refreshScreen();
-				System.out.println(" ------------------------");
-				System.out.println(" |                      |");
-				System.out.println(" |   WINNER : player1   |");
-				System.out.println(" |                      |");
-				System.out.println(" ------------------------");
+				System.out.println(createVictoryMessage(player1.getIdentifiant()));
 				break;
 			}
 			play(player2);
 			if(state == State.FINISH)
 			{
 				refreshScreen();
-				System.out.println(" ------------------------");
-				System.out.println(" |                      |");
-				System.out.println(" |   WINNER : player2   |");
-				System.out.println(" |                      |");
-				System.out.println(" ------------------------");
+				System.out.println(createVictoryMessage(player2.getIdentifiant()));
 				break;
 			}
 		}
@@ -149,7 +164,7 @@ public final class TicTacToe
 	 *             Player to check
 	 * @return True if the player win an line
 	 */
-	public final boolean winLine(Player player)
+	public boolean winLine(Player player)
 	{
 		for(int i = 0; i < board.length; i++)
 			if((board[i][0] == player.getSigil()) && (board[i][1] == player.getSigil())
@@ -166,7 +181,7 @@ public final class TicTacToe
 	 *             Player to check
 	 * @return True if the player win an column
 	 */
-	public final boolean winColumn(Player player)
+	public boolean winColumn(Player player)
 	{
 		for(int i = 0; i < board.length; i++)
 			if((board[0][i] == player.getSigil()) && (board[1][i] == player.getSigil())
@@ -183,7 +198,7 @@ public final class TicTacToe
 	 *             Player to check
 	 * @return True if the player win with an diagonal (left or right)
 	 */
-	public final boolean winDiagonal(Player player)
+	public boolean winDiagonal(Player player)
 	{
 		return winDiagonalLeft(player) || winDiagonalRight(player);
 	}
@@ -195,7 +210,7 @@ public final class TicTacToe
 	 *             Player to check
 	 * @return True if the player win with an left diagonal
 	 */
-	private final boolean winDiagonalLeft(Player player)
+	private boolean winDiagonalLeft(Player player)
 	{
 		for(int indice = 0; indice < board.length; indice++)
 			if(board[indice][indice] != player.getSigil())
@@ -211,7 +226,7 @@ public final class TicTacToe
 	 *             Player to check
 	 * @return True if the player win with right diagonal
 	 */
-	private final boolean winDiagonalRight(Player player)
+	private boolean winDiagonalRight(Player player)
 	{
 		for(int indice = 0; indice < board.length; indice++)
 			if(board[indice][board.length - indice - 1] != player.getSigil())
@@ -223,11 +238,38 @@ public final class TicTacToe
 	/**
 	 * Print character \033c, flush and print toString
 	 */
-	public final void refreshScreen()
+	private void refreshScreen()
 	{
 		System.out.print("\033c");
 		System.out.flush();
 		System.out.println(toString());
+	}
+	
+	/**
+	 * Create the victory's message, according to the winner (player_id)
+	 * 
+	 * @param player_id ID of the winner
+	 * 
+	 * @return An String to describe the victory
+	 */
+	private String createVictoryMessage(int player_id)
+	{
+		StringBuilder victoryMessage = new StringBuilder();
+		
+		victoryMessage.append(" ------------------------");
+		victoryMessage.append(LINE_SEPARATOR);
+		victoryMessage.append(" |                      |");
+		victoryMessage.append(LINE_SEPARATOR);
+		victoryMessage.append(" |   WINNER : player");
+		victoryMessage.append(player_id);
+		victoryMessage.append("   |");
+		victoryMessage.append(LINE_SEPARATOR);
+		victoryMessage.append(" |                      |");
+		victoryMessage.append(LINE_SEPARATOR);
+		victoryMessage.append(" ------------------------");
+		victoryMessage.append(LINE_SEPARATOR);
+		
+		return victoryMessage.toString();
 	}
 
 	@Override
